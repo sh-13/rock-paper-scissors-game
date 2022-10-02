@@ -1,10 +1,15 @@
+"""Rock - Paper - Scissors Game
+
+Choose your choice from Rock/Paper/Scissors to beat the computer.
+
+All the best !!!
+"""
 import random
 
 
-def get_user_input(round_no):
-    print("|                                              |")
+def get_player_input(round_no):
+    """ Get player's input from Rock/Paper/Scissors/Quit options """
     print("|                  Round :", round_no, "                  |")
-    print("|                                              |")
     print("|    ---------     ---------     ----------    |")
     print("|   |  ROCK   |   |  PAPER  |   | SCISSORS |   |")
     print("|   | (r / R) |   | (p / P) |   |  (s / S) |   |")
@@ -14,39 +19,47 @@ def get_user_input(round_no):
     return input(" Choose your choice ---> ")
 
 
-def verify_user_input(user_input):
-    if user_input == 'r' or user_input == 'R':
+def verify_player_input(player_input):
+    """ Verify player has input correct choice """
+    if player_input in ('r', 'R'):
         return 1
-    elif user_input == 'p' or user_input == 'P':
+    if player_input in ('p', 'P'):
         return 2
-    elif user_input == 's' or user_input == 'S':
+    if player_input in ('s', 'S'):
         return 3
-    elif user_input == 'q' or user_input == 'Q':
+    if player_input in ('q', 'Q'):
         return "quit"
-    else:
-        return False
+    return False
 
 
 def make_computer_choice():
+    """ Computer choose randomly from Rock(1)/Paper(2)/Scissors(3) """
     return random.randint(0, 2)
 
 
-def evaluate_result(user_choice, computer_choice):
-    if user_choice == computer_choice:
+def evaluate_result(player_choice, computer_choice):
+    """ Find the winner based on player and computer's choices """
+    if player_choice == computer_choice:
+        print("                 Its a Draw !!!                  ")
         return "draw"
-    elif (computer_choice + 1) % 3 == (user_choice % 3):
-        return "user"
-    else:
-        return "computer"
+    if (computer_choice + 1) % 3 == (player_choice % 3):
+        print("             You win this round !!!             ")
+        return "player"
+    print("         Computer wins this round !!!           ")
+    return "computer"
 
 
-def print_game_banner_screen():
+def print_start_game_screen():
+    """ Game starting banner """
     print(" ----------------------------------------------")
     print("|                                              |")
     print("|          Rock Paper Scissors Game            |")
+    print("|                                              |")
+    print(" ----------------------------------------------")
 
 
 def print_winning_screen():
+    """ player winning banner """
     print(" ----------------------------------------------")
     print("|          \\                      /            |")
     print("|           --- Congratulation ---             |")
@@ -55,6 +68,7 @@ def print_winning_screen():
 
 
 def print_losing_screen():
+    """ player losing banner """
     print(" ----------------------------------------------")
     print("|            \\                    /            |")
     print("|             ------- Oops -------             |")
@@ -63,6 +77,7 @@ def print_losing_screen():
 
 
 def print_false_input_screen():
+    """ Wrong input banner """
     print(" ----------------------------------------------")
     print("|            \\                    /            |")
     print("|             ------- Oops -------             |")
@@ -70,59 +85,68 @@ def print_false_input_screen():
     print("|              !!! Wrong Input !!!             |")
 
 
-def print_score_card(user_score, computer_score):
+def print_score_card(player_score, computer_score):
+    """ Score card banner """
     print(" ----------------------------------------------")
-    print("|                                              |")
-    print("|     You :", user_score, "    Score Card    Computer :", computer_score, "  |")
+    print("|     You :", player_score, "    Score Card    Computer :",
+          computer_score, "  |")
 
 
 def restart_game():
+    """ Game Restart options """
     print("|     RESTART (any key)      QUIT (q / Q)      |")
     print(" ----------------------------------------------")
     return input(" Choose your choice ---> ")
 
 
 def continue_game():
+    """ Game continue options """
     print("|     CONTINUE (any key)     QUIT (q / Q)      |")
     print(" ----------------------------------------------")
     return input(" Choose your choice ---> ")
 
 
 def play_game():
-    user_score, computer_score, round_no = 0, 0, 1
+    """ Main game code """
+    player_score, computer_score, round_no = 0, 0, 1
+    print_start_game_screen()
     while True:
-        if round_no == 1:
-            print_game_banner_screen()
+        print_score_card(player_score, computer_score)
         computer_choice = make_computer_choice()
-        user_input = get_user_input(round_no)
-        user_choice = verify_user_input(user_input)
-        if not user_choice:
+        player_input = get_player_input(round_no)
+        player_choice = verify_player_input(player_input)
+        if not player_choice:
+            # If player do not enter correct choice, print wrong input screen
+            # and provide choices to continue the game or quit the game
             print_false_input_screen()
             continue_choice = continue_game()
-            if continue_choice == 'q' or continue_choice == 'Q':
+            if continue_choice in ('q', 'Q'):
                 break
-            elif round_no != 1:
-                print_score_card(user_score, computer_score)
-        elif user_choice == 'quit':
+        elif player_choice == 'quit':
             break
         else:
-            winner = evaluate_result(user_choice, computer_choice)
-            if winner == "user":
-                user_score += 1
-            else:
+            # Evaluate the winner and give point to the winner. In draw case,
+            # nobody gets point.
+            winner = evaluate_result(player_choice, computer_choice)
+            if winner == "player":
+                player_score += 1
+            elif winner == "computer":
                 computer_score += 1
+            # Increase the round number after each round.
             round_no += 1
-            if user_score == 5 or computer_score == 5:
-                if user_score == 5:
+            # Whoever reaches 5 points first wins the game, whether it is the
+            # player or the computer.
+            if player_score == 5 or computer_score == 5:
+                if player_score == 5:
                     print_winning_screen()
                 else:
                     print_losing_screen()
-                user_score, computer_score, round_no = 0, 0, 1
+                # When the game finishes, reset the scores, round counter and
+                # provide choices to restart the game or quit the game.
+                player_score, computer_score, round_no = 0, 0, 1
                 restart_choice = restart_game()
-                if restart_choice == 'q' or restart_choice == 'Q':
+                if restart_choice in ('q', 'Q'):
                     break
-            else:
-                print_score_card(user_score, computer_score)
 
 
 if __name__ == '__main__':
