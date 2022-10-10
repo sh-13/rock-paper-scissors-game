@@ -90,12 +90,15 @@ class Game:
             the score of the winner. In case of draw, no one gets point. """
         if self.player_choice == self.computer_choice:
             print("                 Its a Draw !!!                 ")
+            return "draw"
         elif (self.computer_choice + 1) % 3 == (self.player_choice % 3):
             self.player_score += 1
             print("             You win this round !!!             ")
+            return "player"
         else:
             self.computer_score += 1
             print("         Computer wins this round !!!           ")
+            return "computer"
 
     def is_game_over(self):
         """ Check if the game is finished. The game is finished when either
